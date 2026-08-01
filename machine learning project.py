@@ -230,3 +230,143 @@ selected_df.to_csv(
 
 
 print("\nFeature selection completed successfully!")
+
+
+
+#%%
+
+# =====================================================
+# 5. TRAIN TEST SPLIT + FEATURE SCALING
+# =====================================================
+
+import pandas as pd
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+
+print("\n========== TRAIN TEST SPLIT & SCALING ==========")
+
+
+# Load selected features dataset
+
+file_path = r"data/selected_features.csv"
+
+df = pd.read_csv(file_path)
+
+
+print("Selected Features Dataset:")
+print(df.head())
+
+print("\nShape:")
+print(df.shape)
+
+
+
+# ---------------------------------
+# Separate Features and Target
+# ---------------------------------
+
+X = df.drop(
+    "has_heart_disease",
+    axis=1
+)
+
+y = df["has_heart_disease"]
+
+
+
+# ---------------------------------
+# Train Test Split
+# ---------------------------------
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
+
+
+print("\nTraining Data Shape:")
+print(X_train.shape)
+
+print("\nTesting Data Shape:")
+print(X_test.shape)
+
+
+
+# ---------------------------------
+# Feature Scaling
+# ---------------------------------
+
+scaler = StandardScaler()
+
+
+# Fit only on training data
+X_train_scaled = scaler.fit_transform(
+    X_train
+)
+
+
+# Transform test data
+X_test_scaled = scaler.transform(
+    X_test
+)
+
+
+
+# Convert back to DataFrame
+
+X_train_scaled = pd.DataFrame(
+    X_train_scaled,
+    columns=X_train.columns
+)
+
+
+X_test_scaled = pd.DataFrame(
+    X_test_scaled,
+    columns=X_test.columns
+)
+
+
+
+print("\nScaled Training Data:")
+print(X_train_scaled.head())
+
+
+print("\nScaled Testing Data:")
+print(X_test_scaled.head())
+
+
+
+# ---------------------------------
+# Save Scaled Data
+# ---------------------------------
+
+X_train_scaled.to_csv(
+    r"data/X_train_scaled.csv",
+    index=False
+)
+
+
+X_test_scaled.to_csv(
+    r"data/X_test_scaled.csv",
+    index=False
+)
+
+
+y_train.to_csv(
+    r"data/y_train.csv",
+    index=False
+)
+
+
+y_test.to_csv(
+    r"data/y_test.csv",
+    index=False
+)
+
+
+print("\nScaling and train-test split completed successfully!")
