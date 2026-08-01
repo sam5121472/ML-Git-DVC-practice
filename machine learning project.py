@@ -370,3 +370,235 @@ y_test.to_csv(
 
 
 print("\nScaling and train-test split completed successfully!")
+
+
+
+#%%
+
+# =====================================================
+# 6. MODEL TRAINING (Random Forest + Logistic Regression)
+# =====================================================
+
+import pandas as pd
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    classification_report
+)
+
+
+print("\n========== MODEL TRAINING ==========")
+
+
+# ---------------------------------
+# Load Train Test Data
+# ---------------------------------
+
+X_train = pd.read_csv(
+    r"data/X_train_scaled.csv"
+)
+
+X_test = pd.read_csv(
+    r"data/X_test_scaled.csv"
+)
+
+
+y_train = pd.read_csv(
+    r"data/y_train.csv"
+).values.ravel()
+
+
+y_test = pd.read_csv(
+    r"data/y_test.csv"
+).values.ravel()
+
+
+
+# =====================================================
+# 1. Logistic Regression
+# =====================================================
+
+lr_model = LogisticRegression(
+    random_state=42,
+    max_iter=1000
+)
+
+
+# Train model
+lr_model.fit(
+    X_train,
+    y_train
+)
+
+
+# Prediction
+lr_pred = lr_model.predict(
+    X_test
+)
+
+
+
+# Evaluation
+
+lr_accuracy = accuracy_score(
+    y_test,
+    lr_pred
+)
+
+lr_precision = precision_score(
+    y_test,
+    lr_pred
+)
+
+lr_recall = recall_score(
+    y_test,
+    lr_pred
+)
+
+lr_f1 = f1_score(
+    y_test,
+    lr_pred
+)
+
+
+
+print("\nLogistic Regression Results")
+
+print("Accuracy:", lr_accuracy)
+print("Precision:", lr_precision)
+print("Recall:", lr_recall)
+print("F1 Score:", lr_f1)
+
+print("\nClassification Report:")
+print(
+    classification_report(
+        y_test,
+        lr_pred
+    )
+)
+
+
+
+# =====================================================
+# 2. Random Forest
+# =====================================================
+
+rf_model = RandomForestClassifier(
+    n_estimators=100,
+    random_state=42
+)
+
+
+# Train model
+
+rf_model.fit(
+    X_train,
+    y_train
+)
+
+
+# Prediction
+
+rf_pred = rf_model.predict(
+    X_test
+)
+
+
+
+# Evaluation
+
+rf_accuracy = accuracy_score(
+    y_test,
+    rf_pred
+)
+
+rf_precision = precision_score(
+    y_test,
+    rf_pred
+)
+
+rf_recall = recall_score(
+    y_test,
+    rf_pred
+)
+
+rf_f1 = f1_score(
+    y_test,
+    rf_pred
+)
+
+
+
+print("\nRandom Forest Results")
+
+print("Accuracy:", rf_accuracy)
+print("Precision:", rf_precision)
+print("Recall:", rf_recall)
+print("F1 Score:", rf_f1)
+
+
+print("\nClassification Report:")
+print(
+    classification_report(
+        y_test,
+        rf_pred
+    )
+)
+
+
+
+# =====================================================
+# Model Comparison
+# =====================================================
+
+results = pd.DataFrame({
+
+    "Model": [
+        "Logistic Regression",
+        "Random Forest"
+    ],
+
+    "Accuracy": [
+        lr_accuracy,
+        rf_accuracy
+    ],
+
+    "Precision": [
+        lr_precision,
+        rf_precision
+    ],
+
+    "Recall": [
+        lr_recall,
+        rf_recall
+    ],
+
+    "F1 Score": [
+        lr_f1,
+        rf_f1
+    ]
+
+})
+
+
+print("\n========== MODEL COMPARISON ==========")
+
+print(results)
+
+
+
+# Save Results
+
+results.to_csv(
+    r"data/model_results.csv",
+    index=False
+)
+
+
+print("\nModel training completed successfully!")
