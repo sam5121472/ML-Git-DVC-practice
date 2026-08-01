@@ -150,3 +150,83 @@ print("\nProcessed dataset saved!")
 
 
 
+# =====================================================
+# 4. FEATURE SELECTION (TOP 6 FEATURES)
+# =====================================================
+
+print("\n========== FEATURE SELECTION ==========")
+
+
+# Separate features and target
+
+X = df.drop(
+    "has_heart_disease",
+    axis=1
+)
+
+y = df["has_heart_disease"]
+
+
+
+# Select top 6 features
+
+selector = SelectKBest(
+    score_func=f_classif,
+    k=6
+)
+
+
+X_selected = selector.fit_transform(
+    X,
+    y
+)
+
+
+
+# Selected feature names
+
+selected_features = X.columns[
+    selector.get_support()
+]
+
+
+print("\nTop 6 Selected Features:")
+
+for feature in selected_features:
+    print(feature)
+
+
+
+# Create selected dataset
+
+selected_df = pd.DataFrame(
+    X_selected,
+    columns=selected_features
+)
+
+
+selected_df["has_heart_disease"] = y
+
+
+
+print("\nSelected Dataset:")
+print(selected_df.head())
+
+
+print("\nSelected Dataset Shape:")
+print(selected_df.shape)
+
+
+
+# Save selected features dataset
+
+selected_path = r"data/selected_features.csv"
+
+
+selected_df.to_csv(
+    selected_path,
+    index=False
+)
+
+
+print("\nFeature selection completed successfully!")
